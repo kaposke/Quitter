@@ -3,9 +3,9 @@
   "host": "localhost",
   "port": 5432,
   "username": "postgres",
-  "password": "2805",
+  "password": "docker",
   "database": "quitter",
   "entities": ["dist/**/*.entity{.ts,.js}"],
-  "synchronize": true,
+  "synchronize": false,
   "autoLoadEntities": true
 }

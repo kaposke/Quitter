@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./user.entity";
-import { Repository } from "typeorm";
+import { Repository, Like } from "typeorm";
 import { hash } from 'bcrypt';
 import { CreateUserDTO } from "./dtos/create-user.dto";
 
 @Injectable()
 export class UserService {
 
-  constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
+  constructor(@InjectRepository(User) private readonly userRepository: Repository<User>) { }
 
   async create(data: CreateUserDTO) {
     // Encrypt password
@@ -22,15 +22,21 @@ export class UserService {
     return user;
   }
 
-  getByEmail(email: string) {
-    return this.userRepository.findOne({ where: { email } });
+  async getByEmail(email: string, getPassword: boolean = false) {
+    if (getPassword)
+      return await this.userRepository.createQueryBuilder('user').addSelect('user.password').where('LOWER(email) = LOWER(:email)', { email }).getOne();
+
+    return await this.userRepository.createQueryBuilder().where('LOWER(email) = LOWER(:email)', { email }).getOne();
   }
 
-  getByUsername(username: string) {
-    return this.userRepository.findOne({ where: { username } });
+  async getByUsername(username: string, getPassword: boolean = false) {
+    if (getPassword)
+      return await this.userRepository.createQueryBuilder('user').addSelect('user.password').where('LOWER(username) = LOWER(:username)', { username }).getOne();
+
+    return await this.userRepository.createQueryBuilder().where('LOWER(username) = LOWER(:username)', { username }).getOne();
   }
 
-  get(id: number) {
-    return this.userRepository.findOne(id);
+  async get(id: number) {
+    return await this.userRepository.findOne(id);
   }
 }

@@ -18,7 +18,6 @@ export class UserController {
     }
 
     const emailExists = await this.userService.getByEmail(createUserDTO.email);
-    console.log(emailExists);
     if (emailExists) {
       throw new HttpException('This email is already registered', HttpStatus.CONFLICT);
     }

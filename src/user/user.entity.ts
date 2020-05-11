@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Quitt } from "src/quitt/quitt.entity";
 
 @Entity()
 export class User {
@@ -12,7 +13,9 @@ export class User {
   @Column()
   email: string;
   
-  @Column({ length: 30 })
-  @Column()
+  @Column({ length: 30, select: false })
   password: string;
+
+  @OneToMany(type => Quitt, quitt => quitt.user)
+  quitts: Quitt[];
 }
